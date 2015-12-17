@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Media</title>
+  <script type="text/javascript">
+    var objectname;
+    var embedname;
+    var medianame;
+    var mediaquery = '?';
+
+    window.parent.mediaplaying = false;
+
+    function loadflash()
+    {    
+      var qsParam = new Array();
+      var query = window.location.search.substring(1);
+      var params = query.split('&');
+
+      for (var i = 0; i < params.length; i++) 
+      {
+        var pos = params[i].indexOf('=');
+
+        if (pos > 0) 
+        {
+          var key = params[i].substring(0,pos);
+          var val = params[i].substring(pos+1);
+          qsParam[key] = val;
+        }
+      }
+
+      objectname = qsParam['name'].replace('.swf', '');
+      embedname = 'embed' + objectname;
+
+      if (qsParam['language'] != null) {
+        mediaquery += (mediaquery == '?' ? '' : '&') + 'Language=' + qsParam['language'];
+      }
+
+      if (qsParam['progress'] != null) {
+        mediaquery += (mediaquery == '?' ? '' : '&') + 'Progress=' + qsParam['progress'];
+      }
+
+      medianame = qsParam['name'] + (mediaquery == '?' ? '' : mediaquery);
+
+      var html = '<object id="' + objectname + '" name="' + objectname + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0" width="' + qsParam['width'] + '" height="' + qsParam['height'] + '" allowScriptAccess="always">';
+      html += '<param name="wmode" value="transparent" /><param name="allowScriptAccess" value="always" /><param name="movie" value="../media/' + medianame + '" />';
+      html += '<param name="quality" value="high" />';
+      html += '<embed id="' + embedname + '" name="' + embedname + '" src="../media/' + medianame + '" wmode="transparent" quality="high" pluginspage="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="' + qsParam['width'] + '" height="' + qsParam['height'] + '" allowScriptAccess="always"></embed></object>';
+      window.document.body.innerHTML = html;
+    }
+
+    function setMediaTracking(val) {
+      window.parent.mediaplaying = (val.toLowerCase() == 'true');
+    }
+
+    function checkMediaStatus() {
+      if (window.document[objectname] && window.document[objectname].setViewMedia) {
+        window.document[objectname].setViewMedia((window.parent.mediaplaying ? "1" : "0"));
+      } else if (window.document[embedname] && window.document[embedname].setViewMedia) {
+        window.document[embedname].setViewMedia((window.parent.mediaplaying ? "1" : "0"));
+      } else {
+        window.document.getElementById(embedname).setViewMedia((window.parent.mediaplaying ? "1" : "0"));
+      }
+    }
+
+    function recordMediaProgress(name, progress) {
+      window.parent.recordMediaProgress(name, progress);
+    }
+
+    function getLabData() {
+      if (window.document[objectname] && window.document[objectname].putLabData) {
+        window.document[objectname].putLabData(window.parent.getLabData());
+      } else if (window.document[embedname] && window.document[embedname].putLabData) {
+        window.document[embedname].putLabData(window.parent.getLabData());
+      } else {
+        window.document.getElementById(embedname).putLabData(window.parent.getLabData());
+      }
+    }
+
+    function recordLabData(d) {
+      window.parent.recordLabData(d);
+
+      if (window.document[objectname] && window.document[objectname].saveLabData) {
+        window.document[objectname].saveLabData("Success");
+      } else if (window.document[embedname] && window.document[embedname].saveLabData) {
+        window.document[embedname].saveLabData("Success");
+      } else {
+        window.document.getElementById(embedname).saveLabData("Success");
+      }
+    }
+
+    function speak(d) {
+      window.parent.speak(d);
+    }
+
+    function getSpeechText(v) {
+      window.document[embedname].getSpeechText(v);
+    }
+  </script>
+</head>
+<body onload="loadflash();">
+
+</body>
+</html>
